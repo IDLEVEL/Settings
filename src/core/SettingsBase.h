@@ -26,13 +26,6 @@
 
 namespace sets {
 
-enum CUSTOM_FILE_TYPE
-{
-    CUSTOM_FILE_JS = 0,
-    CUSTOM_FILE_CSS = 1,
-    CUSTOM_FILE_MAX = 2
-};
-
 class SettingsBase {
     static const uint16_t FOCUS_TOUT = 5000;
     static const uint16_t DB_WS_UPDATE_PRD = 300;

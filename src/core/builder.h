@@ -24,6 +24,13 @@ enum class DivType : uint8_t {
     Block,
 };
 
+enum CUSTOM_FILE_TYPE : uint8_t
+{
+    CUSTOM_FILE_JS = 0,
+    CUSTOM_FILE_CSS = 1,
+    CUSTOM_FILE_MAX = 2
+};
+
 class Builder {
     friend class BasicContainer;
 
