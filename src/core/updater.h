@@ -148,6 +148,7 @@ class Updater {
     Updater& updateStyles(const String& selector, const String& add_class, const String& remove_class, const String& set_style = "") {
         p('{');
 
+        p[Code::type] = Code::update_styles;
         p[Code::query_selector] = selector;
 
         if(add_class.length())
