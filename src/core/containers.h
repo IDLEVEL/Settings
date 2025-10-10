@@ -36,7 +36,7 @@ class BasicContainer {
 // контейнер группы виджетов
 class Group : public BasicContainer {
    public:
-    Group(Builder& b, size_t id, Text title = Text()) : BasicContainer(Code::group, id, b, title) {}
+    Group(Builder& b, size_t id = _NO_ID, Text title = Text()) : BasicContainer(Code::group, id, b, title) {}
 };
 
 // контейнер вложенного меню
@@ -48,13 +48,13 @@ class Menu : public BasicContainer {
 // контейнер кнопок
 class Buttons : public BasicContainer {
    public:
-    Buttons(Builder& bsize_t id, ) : BasicContainer(Code::buttons, id, b) {}
+    Buttons(Builder& b, size_t id = _NO_ID) : BasicContainer(Code::buttons, id, b) {}
 };
 
 // горизонтальный контейнер [DivType::Line | DivType::Block]
 class Row : public BasicContainer {
    public:
-    Row(Builder& b, size_t id, Text title = Text(), DivType divtype = DivType::Default) : BasicContainer(Code::row, id, b, title, divtype) {}
+    Row(Builder& b, size_t id = _NO_ID, Text title = Text(), DivType divtype = DivType::Default) : BasicContainer(Code::row, id, b, title, divtype) {}
 };
 
 }  // namespace sets
