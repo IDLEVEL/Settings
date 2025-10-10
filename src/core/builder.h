@@ -88,8 +88,8 @@ class Builder {
     // ================= GROUP =================
 
     // группа виджетов
-    bool beginGroup(Text title = Text()) {
-        return _beginContainer(Code::group, title);
+    bool beginGroup(size_t id, Text title = Text()) {
+        return _beginContainer(id, Code::group, title);
     }
     void endGroup() {
         _endContainer();
@@ -98,8 +98,8 @@ class Builder {
     // ================= ROW =================
 
     // горизонтальная группа виджетов [DivType::Line | DivType::Block]
-    bool beginRow(Text title = Text(), DivType divtype = DivType::Default) {
-        return _beginContainer(Code::row, title, divtype);
+    bool beginRow(size_t id, Text title = Text(), DivType divtype = DivType::Default) {
+        return _beginContainer(id, Code::row, title, divtype);
     }
     void endRow() {
         _endContainer();
@@ -108,8 +108,8 @@ class Builder {
     // ================= MENU =================
 
     // вложенное меню
-    bool beginMenu(Text title) {
-        return _beginContainer(Code::menu, title);
+    bool beginMenu(size_t id, Text title) {
+        return _beginContainer(id, Code::menu, title);
     }
     void endMenu() {
         _endContainer();
@@ -123,8 +123,8 @@ class Builder {
     // ================= BUTTONS =================
 
     // ряд кнопок
-    bool beginButtons() {
-        return _beginContainer(Code::buttons);
+    bool beginButtons(size_t id) {
+        return _beginContainer(id, Code::buttons);
     }
     void endButtons() {
         _endContainer();
@@ -751,12 +751,13 @@ class Builder {
         p->checkLen();
     }
 
-    bool _beginContainer(Code type, Text title = Text(), DivType divtype = DivType::Default) {
-        if (type == Code::menu) ++_menuID;
+    bool _beginContainer(size_t id, Code type, Text title = Text(), DivType divtype = DivType::Default) {
+        if (type == Code::menu && id == _NO_ID) ++_menuID;
         if (build.isBuild()) {
             (*p)('{');
             (*p)[Code::type] = type;
-            if (type == Code::menu) (*p)[Code::id] = _menuID;
+            if (type == Code::menu && id == _NO_ID) (*p)[Code::id] = _menuID;
+            else (*p)[Code::id] = id;
             if (title.length()) (*p)[Code::title] = title;
             switch (divtype) {
                 case DivType::Default: break;
