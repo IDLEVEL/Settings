@@ -116,34 +116,10 @@ class SettingsESP : public sets::SettingsBase {
             server.send_P(200, "image/svg+xml", (PGM_P)settings_favicon_gz, sizeof(settings_favicon_gz));
         });
         server.on("/custom.js", HTTP_GET, [this]() {
-
-            auto file = &custom[CUSTOM_FILE_JS];
-
-            if (!file->p) server.send(500);
-            else {
-                if (file->gz) gzip_h();
-                if (!file->isFile) server.send_P(200, "text/javascript", file->p, file->len);
-                else {
-                    File f = fs.openRead(file->p);
-                    if (f) server.streamFile(f, "text/javascript");
-                    else server.send(500);
-                }
-            }
+            sendCustom(CUSTOM_FILE_JS, "text/javascript");
         });
         server.on("/custom.css", HTTP_GET, [this]() {
-
-            auto file = &custom[CUSTOM_FILE_CSS];
-
-            if (!file->p) server.send(500);
-            else {
-                if (file->gz) gzip_h();
-                if (!file->isFile) server.send_P(200, "text/css", file->p, file->len);
-                else {
-                    File f = fs.openRead(file->p);
-                    if (f) server.streamFile(f, "text/css");
-                    else server.send(500);
-                }
-            }
+            sendCustom(CUSTOM_FILE_CSS, "text/css"));
         });
     }
 
@@ -177,6 +153,21 @@ class SettingsESP : public sets::SettingsBase {
     }
     IPAddress getIP() override {
         return WiFi.localIP();
+    }
+
+    void sendCustom(CUSTOM_FILE_TYPE fileType, const char* contentType) {
+        auto file = &custom[fileType];
+
+        if (!file->p) server.send(500);
+        else {
+            if (file->gz) gzip_h();
+            if (!file->isFile) server.send_P(200, contentType, file->p, file->len);
+            else {
+                File f = fs.openRead(file->p);
+                if (f) server.streamFile(f, contentType);
+                else server.send(500);
+            }
+        }
     }
 
     void answer(uint8_t* data, size_t len) override {

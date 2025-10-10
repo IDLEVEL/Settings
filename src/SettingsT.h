@@ -88,15 +88,11 @@ class SettingsT : public sets::SettingsBase {
                     break;
 
                 case SH("/custom.js"):
-                    if (!custom.p) server.send(500);
-                    else {
-                        if (!custom.isFile) server.sendFile_P((const uint8_t*)custom.p, custom.len, "text/javascript", false, custom.gz);
-                        else {
-                            File f = fs.openRead(custom.p);
-                            if (f) server.sendFile(f, "text/javascript", false, custom.gz);
-                            else server.send(500);
-                        }
-                    }
+                    sendCustom(CUSTOM_FILE_JS, "text/javascript");
+                    break;
+
+                case SH("/custom.css"):
+                    sendCustom(CUSTOM_FILE_CSS, "text/css");
                     break;
 
                 default:
@@ -125,5 +121,18 @@ class SettingsT : public sets::SettingsBase {
 
     void answer(uint8_t* data, size_t len) override {
         server.send(Text(data, len));
+    }
+
+    void sendCustom(CUSTOM_FILE_TYPE fileType, const char* contentType) {
+        auto file = custom[fileType];
+        if (!file->p) server.send(500);
+        else {
+            if (!file->isFile) server.sendFile_P((const uint8_t*)file->p, file->len, contentType, false, custom.gz);
+            else {
+                File f = fs.openRead(file->p);
+                if (f) server.sendFile(f, contentType, false, file->gz);
+                else server.send(500);
+            }
+        }
     }
 };

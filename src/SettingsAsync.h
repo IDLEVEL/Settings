@@ -112,18 +112,10 @@ class SettingsAsync : public sets::SettingsBase {
             request->send(response);
         });
         server.on("/custom.js", HTTP_GET, [this](AsyncWebServerRequest *request) {
-            if (!custom.p || !fs.fs(custom.p)) {
-                sendCode(500, request);
-            } else {
-                AsyncWebServerResponse *response;
-                if (!custom.isFile) response = request->beginResponse_P(200, "text/javascript", (const uint8_t *)custom.p, custom.len);
-                else response = request->beginResponse(*(fs.fs(custom.p)), custom.p, "text/javascript");
-                if (!response) return;
-
-                if (custom.gz) gzip_h(response);
-                cors_h(response);
-                request->send(response);
-            }
+            sendCustom(request, CUSTOM_FILE_JS, "text/javascript");
+        });
+        server.on("/custom.css", HTTP_GET, [this](AsyncWebServerRequest *request) {
+            sendCustom(request, CUSTOM_FILE_CSS, "text/css");
         });
     }
 
@@ -162,6 +154,22 @@ class SettingsAsync : public sets::SettingsBase {
         AsyncWebServerResponse *response = request->beginResponse(code);
         cors_h(response);
         request->send(response);
+    }
+    
+    void sendCustom(AsyncWebServerRequest *request, CUSTOM_FILE_TYPE fileType, const char* contentType) {
+        auto file = &custom[fileType];
+        if (!file->p || !fs.fs(file->p)) {
+            sendCode(500, request);
+        } else {
+            AsyncWebServerResponse *response;
+            if (!file->isFile) response = request->beginResponse_P(200, contentType, (const uint8_t *)file->p, file->len);
+            else response = request->beginResponse(*(fs.fs(file->p)), file->p, contentType);
+            if (!response) return;
+
+            if (file->gz) gzip_h(response);
+            cors_h(response);
+            request->send(response);
+        }
     }
 
     void gzip_h(AsyncWebServerResponse *response) {
