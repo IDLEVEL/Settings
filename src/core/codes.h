@@ -93,7 +93,12 @@ enum class Code : uint8_t {
     s_ver,
     f_ver,
     use_fs,
-    custom_css_hash
+    custom_css_hash,
+    update_styles,
+    query_selector,
+    add_class,
+    remove_class,
+    set_style
 };
 
 }

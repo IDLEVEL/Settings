@@ -141,7 +141,26 @@ class Updater {
     }
 
     // кастом апдейт для кастом виджета, params - ключи и значения
-    Updater& update(size_t id, BSON& params) {
+    Updater& update(const String& selector, const String& add_class = "", const String& remove_class = "", const String& set_style = "") {
+        p('{');
+        p[Code::id] = id;
+
+        p[Code::query_selector] = selector;
+
+        if(add_class.length())
+            p[Code::add_class] = add_class;
+
+        if(remove_class.length())
+            p[Code::remove_class] = remove_class;
+
+        if(set_style.length())
+            p[Code::set_style] = set_style;
+
+        p('}');
+        return *this;
+    }
+
+    Updater& style(size_t id, BSON& params) {
         p('{');
         p[Code::id] = id;
 
