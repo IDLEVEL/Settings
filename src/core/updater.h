@@ -140,8 +140,9 @@ class Updater {
         return *this;
     }
 
-    Updater& updateStyles(const String& selector, const String& set_style = "") {
+    Updater& updateStyle(const String& selector, const String& set_style = "") {
         updateStyles(selector, "", "", set_style);
+        return *this;
     }
 
     // кастом апдейт для кастом виджета, params - ключи и значения
