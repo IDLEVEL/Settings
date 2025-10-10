@@ -116,13 +116,31 @@ class SettingsESP : public sets::SettingsBase {
             server.send_P(200, "image/svg+xml", (PGM_P)settings_favicon_gz, sizeof(settings_favicon_gz));
         });
         server.on("/custom.js", HTTP_GET, [this]() {
-            if (!custom.p) server.send(500);
+
+            auto file = &custom[CUSTOM_FILE_JS];
+
+            if (!file->p) server.send(500);
             else {
-                if (custom.gz) gzip_h();
-                if (!custom.isFile) server.send_P(200, "text/javascript", custom.p, custom.len);
+                if (file->gz) gzip_h();
+                if (!file->isFile) server.send_P(200, "text/javascript", file->p, file->len);
                 else {
-                    File f = fs.openRead(custom.p);
+                    File f = fs.openRead(file->p);
                     if (f) server.streamFile(f, "text/javascript");
+                    else server.send(500);
+                }
+            }
+        });
+        server.on("/custom.css", HTTP_GET, [this]() {
+
+            auto file = &custom[CUSTOM_FILE_CSS];
+
+            if (!file->p) server.send(500);
+            else {
+                if (file->gz) gzip_h();
+                if (!file->isFile) server.send_P(200, "text/css", file->p, file->len);
+                else {
+                    File f = fs.openRead(file->p);
+                    if (f) server.streamFile(f, "text/css");
                     else server.send(500);
                 }
             }

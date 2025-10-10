@@ -26,6 +26,13 @@
 
 namespace sets {
 
+enum CUSTOM_FILE_TYPE
+{
+    CUSTOM_FILE_JS = 0,
+    CUSTOM_FILE_CSS = 1,
+    CUSTOM_FILE_MAX = 2
+};
+
 class SettingsBase {
     static const uint16_t FOCUS_TOUT = 5000;
     static const uint16_t DB_WS_UPDATE_PRD = 300;
@@ -57,7 +64,7 @@ class SettingsBase {
         bool useFS = true;
     };
 
-    struct CustomJS {
+    struct CustomFile {
         const char* p = nullptr;
         size_t len;
         uint8_t hash = 0;
@@ -236,24 +243,26 @@ class SettingsBase {
     }
 
     // установить кастом js код из PROGMEM
-    void setCustom(const char* js, size_t len, bool gz = false) {
-        custom.isFile = false;
-        custom.p = js;
-        custom.gz = gz;
-        custom.len = len;
-        custom.hash = 0;
-        while (len--) custom.hash += pgm_read_byte(js++);
+    void setCustom(CUSTOM_FILE_TYPE type, const char* src, size_t len, bool gz = false) {
+        auto file = &custom[type];
+        file->isFile = false;
+        file->p = src;
+        file->gz = gz;
+        file->len = len;
+        file->hash = 0;
+        while (len--) file->hash += pgm_read_byte(js++);
     }
 
     // установить кастом js код из файла
-    void setCustomFile(const char* path, bool gz = false) {
-        custom.isFile = true;
-        custom.p = path;
-        custom.gz = gz;
-        custom.hash = 0;
-        File f = fs.openRead(custom.p);
+    void setCustomFile(CUSTOM_FILE_TYPE type, const char* path, bool gz = false) {
+        auto file = &custom[type];
+        file->isFile = true;
+        file->p = path;
+        file->gz = gz;
+        file->hash = 0;
+        File f = fs.openRead(file->p);
         if (f) {
-            while (f.available()) custom.hash += f.read();
+            while (f.available()) file->hash += f.read();
         }
     }
 
@@ -275,7 +284,9 @@ class SettingsBase {
     StampKeeper rtc;
 
    protected:
-    CustomJS custom;
+
+    CustomFile custom[CUSTOM_FILE_MAX];
+
     FileCallback fetch_cb = nullptr;
     FileCallback upload_cb = nullptr;
 
@@ -518,7 +529,8 @@ class SettingsBase {
             p[Code::mac] = getMac();
             p[Code::local_ip] = getIP().toString();
             if (_f_ver) p[Code::f_ver] = _f_ver;
-            if (custom.p) p[Code::custom_hash] = custom.hash;
+            if (custom[CUSTOM_FILE_JS].p) p[Code::custom_hash] = custom.hash;
+            if (custom[CUSTOM_FILE_CSS].p) p[Code::custom_css_hash] = custom_css.hash;
             if (_title.length()) p[Code::title] = _title;
             if (_passh) p[Code::granted] = granted;
             if (_pname) p[Code::proj_name] = _pname;

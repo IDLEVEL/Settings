@@ -28,7 +28,7 @@ enum class Code : uint8_t {
     total,
     rssi,
     custom_hash,
-
+    custom_css_hash,
     label,
     title,
     text,
