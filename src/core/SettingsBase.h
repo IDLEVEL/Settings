@@ -250,7 +250,7 @@ class SettingsBase {
         file->gz = gz;
         file->len = len;
         file->hash = 0;
-        while (len--) file->hash += pgm_read_byte(js++);
+        while (len--) file->hash += pgm_read_byte(src++);
     }
 
     // установить кастом js код из файла
