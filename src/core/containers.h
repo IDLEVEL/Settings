@@ -22,8 +22,8 @@ class GuestAccess {
 
 class BasicContainer {
    public:
-    BasicContainer(Code type, Builder& b, Text title = Text(), DivType divtype = DivType::Default) : b(b) {
-        b._beginContainer(type, title, divtype);
+    BasicContainer(size_t id, Code type, Builder& b, Text title = Text(), DivType divtype = DivType::Default) : b(b) {
+        b._beginContainer(id, type, title, divtype);
     }
     ~BasicContainer() {
         b._endContainer();
