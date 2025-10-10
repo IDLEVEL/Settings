@@ -116,10 +116,10 @@ class SettingsESP : public sets::SettingsBase {
             server.send_P(200, "image/svg+xml", (PGM_P)settings_favicon_gz, sizeof(settings_favicon_gz));
         });
         server.on("/custom.js", HTTP_GET, [this]() {
-            sendCustom(CUSTOM_FILE_JS, "text/javascript");
+            sendCustom(sett::CUSTOM_FILE_JS, "text/javascript");
         });
         server.on("/custom.css", HTTP_GET, [this]() {
-            sendCustom(CUSTOM_FILE_CSS, "text/css"));
+            sendCustom(sett::CUSTOM_FILE_CSS, "text/css");
         });
     }
 
@@ -155,7 +155,7 @@ class SettingsESP : public sets::SettingsBase {
         return WiFi.localIP();
     }
 
-    void sendCustom(CUSTOM_FILE_TYPE fileType, const char* contentType) {
+    void sendCustom(sett::CUSTOM_FILE_TYPE fileType, const char* contentType) {
         auto file = &custom[fileType];
 
         if (!file->p) server.send(500);

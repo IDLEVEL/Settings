@@ -112,10 +112,10 @@ class SettingsAsync : public sets::SettingsBase {
             request->send(response);
         });
         server.on("/custom.js", HTTP_GET, [this](AsyncWebServerRequest *request) {
-            sendCustom(request, CUSTOM_FILE_JS, "text/javascript");
+            sendCustom(request, sett::CUSTOM_FILE_JS, "text/javascript");
         });
         server.on("/custom.css", HTTP_GET, [this](AsyncWebServerRequest *request) {
-            sendCustom(request, CUSTOM_FILE_CSS, "text/css");
+            sendCustom(request, sett::CUSTOM_FILE_CSS, "text/css");
         });
     }
 
@@ -155,8 +155,8 @@ class SettingsAsync : public sets::SettingsBase {
         cors_h(response);
         request->send(response);
     }
-    
-    void sendCustom(AsyncWebServerRequest *request, CUSTOM_FILE_TYPE fileType, const char* contentType) {
+
+    void sendCustom(AsyncWebServerRequest *request, sett::CUSTOM_FILE_TYPE fileType, const char* contentType) {
         auto file = &custom[fileType];
         if (!file->p || !fs.fs(file->p)) {
             sendCode(500, request);

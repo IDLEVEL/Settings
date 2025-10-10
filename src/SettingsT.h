@@ -88,11 +88,11 @@ class SettingsT : public sets::SettingsBase {
                     break;
 
                 case SH("/custom.js"):
-                    sendCustom(CUSTOM_FILE_JS, "text/javascript");
+                    sendCustom(sett::CUSTOM_FILE_JS, "text/javascript");
                     break;
 
                 case SH("/custom.css"):
-                    sendCustom(CUSTOM_FILE_CSS, "text/css");
+                    sendCustom(sett::CUSTOM_FILE_CSS, "text/css");
                     break;
 
                 default:
@@ -123,7 +123,7 @@ class SettingsT : public sets::SettingsBase {
         server.send(Text(data, len));
     }
 
-    void sendCustom(CUSTOM_FILE_TYPE fileType, const char* contentType) {
+    void sendCustom(sett::CUSTOM_FILE_TYPE fileType, const char* contentType) {
         auto file = custom[fileType];
         if (!file->p) server.send(500);
         else {
