@@ -140,8 +140,12 @@ class Updater {
         return *this;
     }
 
+    Updater& updateStyles(const String& selector, const String& set_style = "") {
+        updateStyles(selector, "", "", set_style);
+    }
+
     // кастом апдейт для кастом виджета, params - ключи и значения
-    Updater& updateStyles(const String& selector, const String& add_class = "", const String& remove_class = "", const String& set_style = "") {
+    Updater& updateStyles(const String& selector, const String& add_class, const String& remove_class, const String& set_style = "") {
         p('{');
         p[Code::id] = id;
 
