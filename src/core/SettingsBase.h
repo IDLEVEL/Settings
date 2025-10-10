@@ -522,8 +522,8 @@ class SettingsBase {
             p[Code::mac] = getMac();
             p[Code::local_ip] = getIP().toString();
             if (_f_ver) p[Code::f_ver] = _f_ver;
-            if (custom[CUSTOM_FILE_JS].p) p[Code::custom_hash] = custom.hash;
-            if (custom[CUSTOM_FILE_CSS].p) p[Code::custom_css_hash] = custom_css.hash;
+            if (custom[CUSTOM_FILE_JS].p) p[Code::custom_hash] = custom[CUSTOM_FILE_JS].hash;
+            if (custom[CUSTOM_FILE_CSS].p) p[Code::custom_css_hash] = custom[CUSTOM_FILE_CSS].hash;
             if (_title.length()) p[Code::title] = _title;
             if (_passh) p[Code::granted] = granted;
             if (_pname) p[Code::proj_name] = _pname;
