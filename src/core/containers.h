@@ -22,7 +22,7 @@ class GuestAccess {
 
 class BasicContainer {
    public:
-    BasicContainer(size_t id, Code type, Builder& b, Text title = Text(), DivType divtype = DivType::Default) : b(b) {
+    BasicContainer(Code type, size_t id, Builder& b, Text title = Text(), DivType divtype = DivType::Default) : b(b) {
         b._beginContainer(id, type, title, divtype);
     }
     ~BasicContainer() {
@@ -36,25 +36,25 @@ class BasicContainer {
 // контейнер группы виджетов
 class Group : public BasicContainer {
    public:
-    Group(Builder& b, Text title = Text()) : BasicContainer(Code::group, b, title) {}
+    Group(Builder& b, size_t id, Text title = Text()) : BasicContainer(Code::group, id, b, title) {}
 };
 
 // контейнер вложенного меню
 class Menu : public BasicContainer {
    public:
-    Menu(Builder& b, Text title) : BasicContainer(Code::menu, b, title) {}
+    Menu(Builder& b, size_t id, Text title) : BasicContainer(Code::menu, id, b, title) {}
 };
 
 // контейнер кнопок
 class Buttons : public BasicContainer {
    public:
-    Buttons(Builder& b) : BasicContainer(Code::buttons, b) {}
+    Buttons(Builder& bsize_t id, ) : BasicContainer(Code::buttons, id, b) {}
 };
 
 // горизонтальный контейнер [DivType::Line | DivType::Block]
 class Row : public BasicContainer {
    public:
-    Row(Builder& b, Text title = Text(), DivType divtype = DivType::Default) : BasicContainer(Code::row, b, title, divtype) {}
+    Row(Builder& b, size_t id, Text title = Text(), DivType divtype = DivType::Default) : BasicContainer(Code::row, id, b, title, divtype) {}
 };
 
 }  // namespace sets
