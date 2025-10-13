@@ -700,7 +700,7 @@ class Builder {
         TableCSV(_NO_ID, csv, labels);
     }
 
-    bool Class(const Text& name)
+    bool Class(const char* name)
     {
         _class_name = name;
         return true;
@@ -716,7 +716,7 @@ class Builder {
     bool _enabled = true;
     bool _was_set = false;
     bool _set_f = false;
-    Text _class_name = "";
+    const char* _class_name = NULL;
 
     size_t _next() {
         return --_auto_id;
@@ -738,10 +738,10 @@ class Builder {
             if (color != SETS_DEFAULT_COLOR) (*p)[Code::color] = color;
             if (id != _NO_ID) (*p)[Code::id] = id;
 
-            if(_class_name.length())
+            if(_class_name)
             {
                 (*p)[Code::class_name] = _class_name;
-                _class_name = "";
+                _class_name = NULL;
             }
 
             if (value) {
@@ -772,10 +772,10 @@ class Builder {
             if (type == Code::menu && id == _NO_ID) (*p)[Code::id] = _menuID;
             else (*p)[Code::id] = id;
             if (title.length()) (*p)[Code::title] = title;
-            if(_class_name.length())
+            if(_class_name)
             {
                 (*p)[Code::class_name] = _class_name;
-                _class_name = "";
+                _class_name = NULL;
             }
             switch (divtype) {
                 case DivType::Default: break;
