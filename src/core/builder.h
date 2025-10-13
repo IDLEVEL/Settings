@@ -772,6 +772,11 @@ class Builder {
             if (type == Code::menu && id == _NO_ID) (*p)[Code::id] = _menuID;
             else (*p)[Code::id] = id;
             if (title.length()) (*p)[Code::title] = title;
+            if(_class_name)
+            {
+                (*p)[Code::class_name] = _class_name;
+                _class_name = NULL;
+            }
             switch (divtype) {
                 case DivType::Default: break;
                 case DivType::Line: (*p)[Code::divtype] = Code::line; break;
