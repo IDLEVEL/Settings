@@ -17,7 +17,7 @@ class Updater {
     Updater(Packet& p) : p(p) {}
 
     // всплывающее уведомление красное
-    Updater& alert(Text text, const char* class_name) {
+    Updater& alert(Text text, const char* class_name = NULL) {
         p('{');
 
         p[Code::type] = Code::alert;
@@ -31,7 +31,7 @@ class Updater {
     }
 
     // всплывающее уведомление зелёное
-    Updater& notice(Text text, const char* class_name) {
+    Updater& notice(Text text, const char* class_name = NULL) {
         p('{');
 
         p[Code::type] = Code::notice;
