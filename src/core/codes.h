@@ -98,7 +98,8 @@ enum class Code : uint8_t {
     query_selector,
     add_class,
     remove_class,
-    set_style
+    set_style,
+    class_name
 };
 
 }

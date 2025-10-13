@@ -700,6 +700,12 @@ class Builder {
         TableCSV(_NO_ID, csv, labels);
     }
 
+    bool Class(const char* name)
+    {
+        _class_name = name;
+        return true;
+    }
+
    private:
     void* _settings;
     sets::Packet* p = nullptr;
@@ -710,6 +716,7 @@ class Builder {
     bool _enabled = true;
     bool _was_set = false;
     bool _set_f = false;
+    const char* _class_name = NULL;
 
     size_t _next() {
         return --_auto_id;
@@ -730,6 +737,12 @@ class Builder {
             if (label.length()) (*p)[Code::label] = label;
             if (color != SETS_DEFAULT_COLOR) (*p)[Code::color] = color;
             if (id != _NO_ID) (*p)[Code::id] = id;
+
+            if(_class_name)
+            {
+                (*p)[Code::class_name] = _class_name;
+                _class_name = NULL;
+            }
 
             if (value) {
                 (*p)[Code::value];
