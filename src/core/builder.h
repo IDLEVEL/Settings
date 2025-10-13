@@ -700,7 +700,7 @@ class Builder {
         TableCSV(_NO_ID, csv, labels);
     }
 
-    bool Class(su::Text name)
+    bool Class(const Text& name)
     {
         _class_name = name;
         return true;
@@ -716,7 +716,7 @@ class Builder {
     bool _enabled = true;
     bool _was_set = false;
     bool _set_f = false;
-    su::Text _class_name = NULL;
+    Text _class_name;
 
     size_t _next() {
         return --_auto_id;
