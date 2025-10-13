@@ -86,8 +86,11 @@ class SettingsBase {
     };
 
     class InlineUpdater : public Updater {
+
+        bool _auto_send;
+
        public:
-        InlineUpdater(SettingsBase& sets) : Updater(p), sets(sets) {
+        InlineUpdater(SettingsBase& sets, bool auto_send = true) : Updater(p), sets(sets), _auto_send(auto_send) {
             p('{');
             p[Code::type] = Code::update;
             p[Code::content]('[');
@@ -98,10 +101,15 @@ class SettingsBase {
         InlineUpdater& operator=(InlineUpdater&&) = default;
         InlineUpdater& operator=(InlineUpdater&) = default;
 
-        ~InlineUpdater() {
+        void send() {
             p(']');
             p('}');
             if (sets.focused()) sets._sendWS(p);
+        }
+
+        ~InlineUpdater() {
+            if(_auto_send)
+                send();
         }
 
        private:
@@ -111,8 +119,8 @@ class SettingsBase {
 
    protected:
     // начать обновления [ДЛЯ ВЕРСИЙ С ВЕБСОКЕТОМ]
-    InlineUpdater updater() {
-        return InlineUpdater(*this);
+    InlineUpdater updater(bool auto_send = true) {
+        return InlineUpdater(*this, auto_send);
     }
 
    public:
