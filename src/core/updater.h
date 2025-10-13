@@ -17,19 +17,29 @@ class Updater {
     Updater(Packet& p) : p(p) {}
 
     // всплывающее уведомление красное
-    Updater& alert(Text text) {
+    Updater& alert(Text text, const char* class_name) {
         p('{');
+
         p[Code::type] = Code::alert;
         p[Code::text] = text;
+        
+        if(class_name)
+            p[Code::class_name] = class_name;
+        
         p('}');
         return *this;
     }
 
     // всплывающее уведомление зелёное
-    Updater& notice(Text text) {
+    Updater& notice(Text text, const char* class_name) {
         p('{');
+
         p[Code::type] = Code::notice;
         p[Code::text] = text;
+
+        if(class_name)
+            p[Code::class_name] = class_name;
+
         p('}');
         return *this;
     }
