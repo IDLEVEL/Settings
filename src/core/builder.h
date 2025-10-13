@@ -716,7 +716,7 @@ class Builder {
     bool _enabled = true;
     bool _was_set = false;
     bool _set_f = false;
-    Text _class_name;
+    Text _class_name = "";
 
     size_t _next() {
         return --_auto_id;
@@ -741,7 +741,7 @@ class Builder {
             if(_class_name.length())
             {
                 (*p)[Code::class_name] = _class_name;
-                _class_name.reset();
+                _class_name = "";
             }
 
             if (value) {
@@ -775,7 +775,7 @@ class Builder {
             if(_class_name.length())
             {
                 (*p)[Code::class_name] = _class_name;
-                _class_name.reset();
+                _class_name = "";
             }
             switch (divtype) {
                 case DivType::Default: break;
