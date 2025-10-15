@@ -24,6 +24,14 @@
 #include "./packet.h"
 #include "./updater.h"
 
+#ifndef SETT_NO_DELAY_SEND
+    #include "freertos/message_buffer.h"
+
+    #ifndef SETT_BSON_BUF_SIZE
+        #define SETT_BSON_BUF_SIZE 2048
+    #endif
+#endif
+
 namespace sets {
 
 class SettingsBase {
@@ -87,10 +95,8 @@ class SettingsBase {
 
     class InlineUpdater : public Updater {
 
-        bool _auto_send;
-
        public:
-        InlineUpdater(SettingsBase& sets, bool auto_send = true) : Updater(p), sets(sets), _auto_send(auto_send) {
+        InlineUpdater(SettingsBase& sets) : Updater(p), sets(sets) {
             p('{');
             p[Code::type] = Code::update;
             p[Code::content]('[');
@@ -101,15 +107,10 @@ class SettingsBase {
         InlineUpdater& operator=(InlineUpdater&&) = default;
         InlineUpdater& operator=(InlineUpdater&) = default;
 
-        void send() {
+        ~InlineUpdater() {
             p(']');
             p('}');
             if (sets.focused()) sets._sendWS(p);
-        }
-
-        ~InlineUpdater() {
-            if(_auto_send)
-                send();
         }
 
        private:
@@ -119,8 +120,8 @@ class SettingsBase {
 
    protected:
     // начать обновления [ДЛЯ ВЕРСИЙ С ВЕБСОКЕТОМ]
-    InlineUpdater updater(bool auto_send = true) {
-        return InlineUpdater(*this, auto_send);
+    InlineUpdater updater() {
+        return InlineUpdater(*this);
     }
 
    public:
@@ -131,8 +132,27 @@ class SettingsBase {
 #endif
         useAutoUpdates(true);
         fs.setFS(LittleFS);
-    }
 
+#ifndef SETT_NO_DELAY_SEND
+        _bson_buffer = xMessageBufferCreate(SETT_BSON_BUF_SIZE);
+#endif
+    }
+    
+#ifndef SETT_NO_DELAY_SEND
+    bool sendAllBSON()
+    {
+        bool sended = false;
+        static uint8_t buffer[SETT_BSON_BUF_SIZE];
+        
+        if(auto size = xMessageBufferReceive(_bson_buffer, buffer, sizeof(buffer), 0))
+        {
+            sendWS(buffer, size - sizeof(uint8_t), buffer[size - sizeof(uint8_t)]);
+            sended = true;
+        }
+
+        return sended;
+    }
+#endif
     // файловая система
     HybridFS fs;
 
@@ -486,6 +506,9 @@ class SettingsBase {
 #ifndef SETT_NO_DB
     GyverDB* _db = nullptr;
 #endif
+#ifndef SETT_NO_DELAY_SEND
+    MessageBufferHandle_t _bson_buffer;
+#endif
     const char *_pname = nullptr, *_plink = nullptr;
     WSHeader* _headerP = nullptr;
     uint16_t _ws_port = 0;
@@ -600,12 +623,24 @@ class SettingsBase {
             uint16_t pid = 0;
             bson.write(&pid, 2);
         }
+#ifndef SETT_NO_DELAY_SEND
+        uint8_t _broadcast_u8 = broadcast ? 1 : 0;
+        bson.write(&_broadcast_u8, sizeof(_broadcast_u8));
+        xMessageBufferSend(_bson_buffer, bson.buf(), bson.length(), 0);
+#else
         sendWS(bson.buf(), bson.length(), broadcast);
+#endif
     }
     void _sendWS(BSON& bson) {
         uint32_t p = 0;
         bson.write(&p, 3);  // skip 0, pid 0
+#ifndef SETT_NO_DELAY_SEND
+        uint8_t _broadcast_u8 = 0;
+        bson.write(&_broadcast_u8, sizeof(_broadcast_u8));
+        xMessageBufferSend(_bson_buffer, bson.buf(), bson.length(), 0);
+#else
         sendWS(bson.buf(), bson.length(), true);
+#endif
     }
 
     static void _hook(void* settptr, Packet& p) {
