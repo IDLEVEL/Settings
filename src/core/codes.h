@@ -96,6 +96,7 @@ enum class Code : uint8_t {
     custom_css_hash,
     update_styles,
     query_selector,
+    query_selector_id,
     add_class,
     remove_class,
     set_style,

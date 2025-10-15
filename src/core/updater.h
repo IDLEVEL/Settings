@@ -150,17 +150,42 @@ class Updater {
         return *this;
     }
 
-    Updater& updateStyle(const String& selector, const String& set_style = "") {
-        updateStyles(selector, "", "", set_style);
+    Updater& updateStyle(size_t id, const String& selector, const String& set_style = "") {
+        updateStyles(id, selector, "", "", set_style);
         return *this;
     }
 
     // кастом апдейт для кастом виджета, params - ключи и значения
-    Updater& updateStyles(const String& selector, const String& add_class, const String& remove_class, const String& set_style = "") {
+    Updater& updateStyles(size_t id, const String& selector, const String& add_class, const String& remove_class, const String& set_style = "") {
         p('{');
 
         p[Code::type] = Code::update_styles;
-        p[Code::query_selector] = selector;
+
+        if(id != _NO_ID)
+            p[Code::query_selector_id] = id;
+
+        if(selector.length())
+            p[Code::query_selector] = selector;
+
+        if(add_class.length())
+            p[Code::add_class] = add_class;
+
+        if(remove_class.length())
+            p[Code::remove_class] = remove_class;
+
+        if(set_style.length())
+            p[Code::set_style] = set_style;
+
+        p('}');
+        return *this;
+    }
+
+    Updater& updateStylesByID(size_t id, const String& add_class, const String& remove_class, const String& set_style = "") {
+        p('{');
+
+        p[Code::type] = Code::update_styles;
+
+        p[Code::query_selector_id] = id;
 
         if(add_class.length())
             p[Code::add_class] = add_class;
