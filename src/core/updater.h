@@ -159,7 +159,7 @@ class Updater {
         updateStyles(id, selector, set ? class_name : "", set ? "" : class_name);
         return *this;
     }
-
+ 
     // кастом апдейт для кастом виджета, params - ключи и значения
     Updater& updateStyles(size_t id, const String& selector, const String& add_class, const String& remove_class, const String& set_style = "") {
         p('{');
